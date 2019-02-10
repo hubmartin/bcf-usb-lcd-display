@@ -35,7 +35,7 @@ def display_image(im):
 
 
 
-    print(im.format, im.size, im.mode)
+    #print(im.format, im.size, im.mode)
 
     im = im.convert('1') # convert image to black and white
 
@@ -47,9 +47,11 @@ def display_image(im):
         binary_str = ""
         for q in range(0,8):
             if get_pixel(im, i + q) == 255:
-                binary_str = '0' + binary_str
+                # We back the bits from left to right - this way the format is identical to LCDs and MCU just copies the data
+                # Colors are also inverted because bit 1 means whit for LCD
+                binary_str += '1'
             else:
-                binary_str = '1' + binary_str
+                binary_str += '0'
 
         byte = int(binary_str, 2)
         #print(binary_str, "-", byte)
@@ -60,7 +62,7 @@ def display_image(im):
 
     #print(binascii.hexlify(bytearray(byte_array)))
 
-    print("BAse64:")
+    #print("BAse64:")
     b64 = base64.b64encode(bytearray(byte_array))
     #print(b64)
 
@@ -79,5 +81,7 @@ while True:
 
     im = Image.frombytes("RGB", sct_img.size, sct_img.bgra, "raw", "BGRX")
     im = im.resize((128,128))
+
+    # im = Image.open("test.png")
     display_image(im)
-    time.sleep(0.04)
+    #time.sleep(0.05)
